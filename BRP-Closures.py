@@ -1,0 +1,175 @@
+import urllib.request
+import shapefile as shp
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import matplotlib.patches as patches
+import matplotlib.patheffects as pe
+import datetime
+from datetime import datetime as dt
+from bs4 import BeautifulSoup
+from matplotlib import rcParams
+rcParams['font.family'] = 'Century Gothic'
+#rcParams['font.weight'] = 'bold'
+
+url = 'https://www.nps.gov/blri/planyourvisit/roadclosures.htm'
+html = urllib.request.urlopen(url)
+soup = BeautifulSoup(html,features='html.parser')
+
+fullString = str(soup)
+
+split1 = fullString.split('A listing of the open/closure status of gated road sections of the parkway. Arranged by Milepost from north to south on the parkway, and includes crossroads for reference.')
+split2 = str(split1[2])
+split3 = split2.split('\n</tbody>')
+table = str(split3[0])
+
+def splitIntoTRs():
+    table1 = table.split('</tr>')
+
+    Status = []
+    Name = []
+    count = 0
+    for i in table1:
+        if count > 0 and count < (len(table1)-2):
+            divideTR = str(i).split('<p>')
+
+            marker1 = str(divideTR[1])
+            marker2 = marker1.split('</p>')
+            marker = str(marker2[0])
+
+            if len(marker) > 6:
+            
+                name1 = str(divideTR[2])
+                name2 = name1.split('</p>')
+                name = str(name2[0])
+
+                status1 = str(divideTR[3])
+                status2 = status1.split('</p>')
+                status = str(status2[0])
+
+                try:
+                    fix1 = status.split(' <br/>\n')
+                    fix2 = str(fix1[1])
+                    Status.append(fix2)
+                    Name.append(name)
+                except:
+                    try:
+                        fix1 = status.split(' ')
+                        fix2 = str(fix1[1])
+                        Status.append(fix2)
+                        Name.append(name)
+                    except:
+                        Status.append(status)
+                        Name.append(name)
+            else:
+                pass
+
+        count = count + 1
+
+    return Status
+
+statusList = splitIntoTRs()
+#statusList=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+locations = ['Richland Balsam','Black Balsam','Graveyard Fields','Mt. Pisgah','Craggy Gardens','Mt. Mitchell','Crabtree Falls','Moses Cone']
+locationsIndex = [36,35,33,32,19,18,16,5]
+
+print(statusList)
+print(len(statusList))
+
+file = open('shapeNames.txt')
+
+fig = plt.figure(figsize=(11,7))
+ax = plt.axes()
+plt.axis('off')
+
+def colorDecider(status):
+    if status == 'Open':
+        return '#72ef64'
+    elif status == 'Closed':
+        return '#ff1e2a'
+    else:
+        return '#72ef64'
+
+    
+sectionCount = 0
+for line in file:
+    sf = shp.Reader('shapefiles\\'+line[:-2])
+
+    for shape in sf.shapeRecords():
+        for i in range(len(shape.shape.parts)):
+            i_start = shape.shape.parts[i]
+            if i==len(shape.shape.parts)-1:
+                i_end = len(shape.shape.points)
+            else:
+                i_end = shape.shape.parts[i+1]
+            e = [i[0] for i in shape.shape.points[i_start:i_end]]
+            f = [i[1] for i in shape.shape.points[i_start:i_end]]
+            plt.plot(e,f, color='{}'.format(colorDecider(statusList[sectionCount])), linewidth=8)
+    sectionCount = sectionCount + 1
+
+sf = shp.Reader('Blue Ridge Parkway NC.shp')
+
+for shape in sf.shapeRecords():
+    for i in range(len(shape.shape.parts)):
+        i_start = shape.shape.parts[i]
+        if i==len(shape.shape.parts)-1:
+            i_end = len(shape.shape.points)
+        else:
+            i_end = shape.shape.parts[i+1]
+        e = [i[0] for i in shape.shape.points[i_start:i_end]]
+        f = [i[1] for i in shape.shape.points[i_start:i_end]]
+        plt.plot(e,f, color='black', linewidth=0.7)
+
+img = mpimg.imread('BRP Background.png')
+imgplot = plt.imshow(img, extent=[-83.583,-80.682,35.087,36.718])
+
+plt.xlim(-83.583,-80.682)
+plt.ylim(35.087,36.718)
+
+height = 0.38
+locationsCount = 0
+for l in locations: 
+    fig.text(0.815,height,l,color='{}'.format(colorDecider(statusList[locationsIndex[locationsCount]])),size=14,ha='center',fontweight='bold')
+    height = height - 0.03
+    locationsCount = locationsCount + 1
+fig.text(0.815,0.41,'Notable Locations',color='white',size=14,ha='center',fontstyle='italic',fontweight='bold')
+
+rect = patches.Rectangle((-81.31, 35.10), 0.615, 0.67, linewidth=0, edgecolor='none', facecolor='#545454')
+ax.add_patch(rect)
+
+cityFile = open('Big Cities.csv')
+csvCount = 0
+for line in cityFile:
+    if csvCount > 0:
+        bigSplit = str(line).split(',')
+        name = str(bigSplit[0])
+        lon = eval(bigSplit[1])
+        lat = eval(bigSplit[2])
+        plt.text(lon,lat,name,fontstyle='italic',color='white',size=20,ha='center',fontweight='bold',path_effects=[pe.withStroke(linewidth=1, foreground="black")])
+    else:
+        pass
+    csvCount = csvCount + 1
+
+cityFile = open('Small Cities.csv')
+csvCount = 0
+for line in cityFile:
+    if csvCount > 0:
+        bigSplit = str(line).split(',')
+        name = str(bigSplit[0])
+        lon = eval(bigSplit[1])
+        lat = eval(bigSplit[2])
+        plt.text(lon,lat,name,fontstyle='italic',color='white',size=16,ha='center',fontweight='bold',path_effects=[pe.withStroke(linewidth=1, foreground="black")])
+    else:
+        pass
+    csvCount = csvCount + 1
+
+#Time Formatting and Placement
+time = dt.strftime(dt.now(),"%b %d\n%I:%M %p")
+fig.text(0.815,0.45,time,color='white',size=14,ha='center')
+
+#Credit
+fig.text(0.6,0.16,"Courtesy of @CarolinaWxGroup",color='white',size=12,ha='center')
+
+plt.savefig('output\BRP-Status.png', dpi=200, bbox_inches='tight',pad_inches = 0)
+
+
+
