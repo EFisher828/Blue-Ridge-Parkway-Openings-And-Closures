@@ -91,7 +91,7 @@ def colorDecider(status):
     
 sectionCount = 0
 for line in file:
-    sf = shp.Reader('shapefiles\\'+line[:-2])
+    sf = shp.Reader('shapefiles/'+line[:-2])
 
     for shape in sf.shapeRecords():
         for i in range(len(shape.shape.parts)):
@@ -175,4 +175,4 @@ plt.margins(0,0)
 plt.gca().xaxis.set_major_locator(plt.NullLocator())
 plt.gca().yaxis.set_major_locator(plt.NullLocator())
 
-fig.savefig('output\BRP-Status.png', dpi=200, bbox_inches='tight',pad_inches = 0)
+fig.savefig('output/BRP-Status.png', dpi=200, bbox_inches='tight',pad_inches = 0)
