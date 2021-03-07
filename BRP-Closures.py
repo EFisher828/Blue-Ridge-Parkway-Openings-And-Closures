@@ -127,7 +127,7 @@ plt.ylim(35.192,36.598)
 height = 0.36
 locationsCount = 0
 for l in locations: 
-    fig.text(0.89,height,l,color='{}'.format(colorDecider(statusList[locationsIndex[locationsCount]])),size=15,ha='center',fontweight='bold')
+    fig.text(0.89,height,l,color='{}'.format(colorDecider(statusList[locationsIndex[locationsCount]])),size=13,ha='center',fontweight='bold')
     height = height - 0.04
     locationsCount = locationsCount + 1
 fig.text(0.89,0.395,'Notable Locations',color='white',size=16,ha='center',fontstyle='italic',fontweight='bold')
@@ -246,7 +246,7 @@ plt.ylim(36.506,38.169)
 height = 0.36
 locationsCount = 0
 for l in locations: 
-    fig.text(0.89,height,l,color='{}'.format(colorDecider(statusList[locationsIndex[locationsCount]])),size=15,ha='center',fontweight='bold')
+    fig.text(0.89,height,l,color='{}'.format(colorDecider(statusList[locationsIndex[locationsCount]])),size=13,ha='center',fontweight='bold')
     height = height - 0.04
     locationsCount = locationsCount + 1
 fig.text(0.89,0.395,'Notable Locations',color='white',size=16,ha='center',fontstyle='italic',fontweight='bold')
