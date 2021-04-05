@@ -36,14 +36,14 @@ def splitIntoTRs():
             marker = str(marker2[0])
 
             if len(marker) > 6:
-            
-                name1 = str(divideTR[2])
-                name2 = name1.split('</p>')
-                name = str(name2[0])
 
-                status1 = str(divideTR[3])
-                status2 = status1.split('</p>')
-                status = str(status2[0])
+                try:
+                    print(divideTR[1])
+                    status1 = str(divideTR[3])
+                    status2 = status1.split('</p>')
+                    status = str(status2[0])
+                except:
+                    Status.append('Open')
 
                 try:
                     fix1 = status.split(' <br/>\n')
@@ -58,7 +58,6 @@ def splitIntoTRs():
                         Name.append(name)
                     except:
                         Status.append(status)
-                        Name.append(name)
             else:
                 pass
 
@@ -127,10 +126,10 @@ plt.ylim(35.192,36.598)
 height = 0.36
 locationsCount = 0
 for l in locations: 
-    fig.text(0.89,height,l,color='{}'.format(colorDecider(statusList[locationsIndex[locationsCount]])),size=13,ha='center',fontweight='bold')
+    fig.text(0.89,height,l,color='{}'.format(colorDecider(statusList[locationsIndex[locationsCount]])),size=15,ha='center',fontweight='bold')
     height = height - 0.04
     locationsCount = locationsCount + 1
-fig.text(0.89,0.395,'Notable Locations',color='white',size=14,ha='center',fontstyle='italic',fontweight='bold')
+fig.text(0.89,0.395,'Notable Locations',color='white',size=16,ha='center',fontstyle='italic',fontweight='bold')
 
 rect = patches.Rectangle((-81.403, 35.201), 0.5, 0.58, linewidth=0, edgecolor='none', facecolor='#545454')
 ax.add_patch(rect)
@@ -246,10 +245,10 @@ plt.ylim(36.506,38.169)
 height = 0.36
 locationsCount = 0
 for l in locations: 
-    fig.text(0.89,height,l,color='{}'.format(colorDecider(statusList[locationsIndex[locationsCount]])),size=13,ha='center',fontweight='bold')
+    fig.text(0.89,height,l,color='{}'.format(colorDecider(statusList[locationsIndex[locationsCount]])),size=15,ha='center',fontweight='bold')
     height = height - 0.04
     locationsCount = locationsCount + 1
-fig.text(0.89,0.395,'Notable Locations',color='white',size=14,ha='center',fontstyle='italic',fontweight='bold')
+fig.text(0.89,0.395,'Notable Locations',color='white',size=16,ha='center',fontstyle='italic',fontweight='bold')
 
 rect = patches.Rectangle((-79.34, 36.519), 0.578, 0.67, linewidth=0, edgecolor='none', facecolor='#545454')
 ax.add_patch(rect)
