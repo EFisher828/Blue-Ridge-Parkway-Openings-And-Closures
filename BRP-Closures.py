@@ -248,7 +248,7 @@ for l in locations:
     fig.text(0.89,height,l,color='{}'.format(colorDecider(statusList[locationsIndex[locationsCount]])),size=15,ha='center',fontweight='bold')
     height = height - 0.04
     locationsCount = locationsCount + 1
-fig.text(0.89,0.395,'Notable Locations',color='white',size=16,ha='center',fontstyle='italic',fontweight='bold')
+fig.text(0.89,0.395,'Notable Locations',color='white',size=13,ha='center',fontstyle='italic',fontweight='bold')
 
 rect = patches.Rectangle((-79.34, 36.519), 0.578, 0.67, linewidth=0, edgecolor='none', facecolor='#545454')
 ax.add_patch(rect)
